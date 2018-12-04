@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ThesisSite.Domain;
 
 namespace ThesisSite
 {
@@ -37,13 +38,24 @@ namespace ThesisSite
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //services.AddDefaultIdentity<ApplicationUser>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
+            {
+                opt.Stores.MaxLengthForKeys = 128;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
+
 
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-            })
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -76,5 +88,7 @@ namespace ThesisSite
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+
     }
 }

@@ -11,6 +11,6 @@ namespace ThesisSite.Domain
 
         public Course Course { get; set; }
 
-        public IList<GroupEnrollment> Enrollments { get; set; }
+        public IList<GroupEnrollment> GroupEnrollments { get; set; }
     }
 }
