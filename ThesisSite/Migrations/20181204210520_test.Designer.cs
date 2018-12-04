@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
-namespace ThesisSite.Data.Migrations
+namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181203212631_ApplicationUserRefactor2")]
-    partial class ApplicationUserRefactor2
+    [Migration("20181204210520_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

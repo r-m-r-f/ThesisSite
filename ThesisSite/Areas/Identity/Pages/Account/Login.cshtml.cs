@@ -39,6 +39,7 @@ namespace ThesisSite.Areas.Identity.Pages.Account
         {
             [Required]
             [DataType(DataType.Text)]
+            [Display(Name = "Index number")]
             public string IndexNumber { get; set; }
 
             [Required]
