@@ -1,4 +1,4 @@
-﻿@model ThesisSite.Domain.Group
+﻿@model ThesisSite.Domain.GroupEnrollment
 
 @{
     ViewData["Title"] = "Details";
@@ -7,15 +7,9 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Group</h4>
+    <h4>GroupEnrollment</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Course)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Course.ID)
-        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CreatedTimestamp)
         </dt>
@@ -33,6 +27,18 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Group)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Group.ID)
         </dd>
     </dl>
 </div>

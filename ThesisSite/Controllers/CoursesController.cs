@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
+using ThesisSite.Domain.Helpers;
 
 namespace ThesisSite.Controllers
 {
@@ -45,6 +47,7 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize(Roles = ApplicationRoles.Admin)]
         public IActionResult Create()
         {
             return View();
@@ -55,6 +58,7 @@ namespace ThesisSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = ApplicationRoles.Admin)]
         public async Task<IActionResult> Create([Bind("Name,Description,ID")] Course course)
         {
             if (ModelState.IsValid)
@@ -68,6 +72,7 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = ApplicationRoles.Admin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,6 +93,7 @@ namespace ThesisSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = ApplicationRoles.Admin)]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,ID,CreatedTimestamp,DeletedTimestamp,IsDeleted")] Course course)
         {
             if (id != course.ID)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Domain;
@@ -23,6 +25,38 @@ namespace ThesisSite.Data
         public DbSet<Group> Groups { get; set; }
 
         public DbSet<GroupEnrollment> GroupEnrollments { get; set; }
+
+        public override int SaveChanges()
+        {
+            UpdateTimestamps();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            UpdateTimestamps();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void UpdateTimestamps()
+        {
+            var entries = ChangeTracker.Entries();
+
+            foreach(var entry in entries)
+            {
+                if(entry is IBaseEntity entity)
+                {
+                    var now = DateTimeOffset.Now;
+
+                    switch(entry.State)
+                    {
+                        case EntityState.Added:
+                            entity.CreatedTimestamp = now;
+                            break;
+                    }
+                }
+            }
+        }
 
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181215172914_add-language-versions")]
+    partial class addlanguageversions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,12 +231,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<int?>("Language");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("ShortDescription");
+                    b.Property<string>("Name");
 
                     b.HasKey("ID");
 

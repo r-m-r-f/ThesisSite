@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace ThesisSite.Domain
 {
-    public class BaseEntity
+    public interface IBaseEntity
     {
-        public int ID { get; set; }
+        int ID { get; set; }
 
-        public DateTime CreatedTimestamp { get; set; }
+        DateTimeOffset CreatedTimestamp { get; set; }
 
-        public DateTime DeletedTimestamp { get; set; }
+        DateTimeOffset? DeletedTimestamp { get; set; }
 
-        public bool IsDeleted { get; set; }
+        bool IsDeleted { get; set; }
     }
 }

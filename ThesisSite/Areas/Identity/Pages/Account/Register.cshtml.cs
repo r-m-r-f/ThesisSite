@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ThesisSite.Domain;
+using ThesisSite.Domain.Helpers;
 
 namespace ThesisSite.Areas.Identity.Pages.Account
 {
@@ -96,11 +97,14 @@ namespace ThesisSite.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    var role = user.UserName.StartsWith("admin") ? ApplicationRoles.Admin : ApplicationRoles.Student;
+                    var isRoleAdded = await _userManager.AddToRoleAsync(user, role);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code = code },
+                        values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",

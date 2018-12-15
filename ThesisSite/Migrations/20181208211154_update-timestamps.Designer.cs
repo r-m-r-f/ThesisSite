@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181208211154_update-timestamps")]
+    partial class updatetimestamps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,8 +154,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<string>("IndexNumber");
 
-                    b.Property<bool>("IsDeleted");
-
                     b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
@@ -229,12 +229,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<int?>("Language");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("ShortDescription");
+                    b.Property<string>("Name");
 
                     b.HasKey("ID");
 
@@ -285,23 +280,6 @@ namespace ThesisSite.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("GroupEnrollments");
-                });
-
-            modelBuilder.Entity("ThesisSite.Domain.LanguageVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CourseId");
-
-                    b.Property<int>("Language");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("LanguageVersion");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -375,14 +353,6 @@ namespace ThesisSite.Migrations
                     b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("ThesisSite.Domain.LanguageVersion", b =>
-                {
-                    b.HasOne("ThesisSite.Domain.Course", "Course")
-                        .WithMany("LanguageVersions")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

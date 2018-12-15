@@ -14,6 +14,8 @@ namespace ThesisSite.Domain
         public string LastName { get; set; }
 
         public string IndexNumber { get; set; }
+
+        public bool IsDeleted { get; set; }
         //[Required]
         //[DataType(DataType.EmailAddress)]
         //public string Email { get; set; }
