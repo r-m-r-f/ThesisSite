@@ -8,27 +8,51 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
-using ThesisSite.Domain.Helpers;
+using ThesisSite.ViewModel.Course;
 
 namespace ThesisSite.Controllers
 {
-    public class CoursesController : Controller
+    public class GroupsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CoursesController(ApplicationDbContext context)
+        public GroupsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Courses
+        // GET: Groups
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var data = await _context.Courses.Where(c => !c.IsDeleted).ToListAsync();
-            return View(data);
+            var applicationDbContext = _context.Groups.Include(c => c.Course);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Courses/Details/5
+        //public async Task<IActionResult> StudentGroups(int? studentId)
+        //{
+
+        //}
+
+        public async Task<IActionResult> CourseGroups(int? courseId)
+        {
+            if ( courseId == null)
+            {
+                return NotFound();
+            }
+
+            var groups = await _context.Groups.Where(c => c.CourseID == courseId).ToListAsync();
+            var course = await _context.Courses.Where(c => c.ID == courseId).SingleOrDefaultAsync();
+            var vm = new CourseGroupsViewModel
+            {
+                Groups = groups,
+                Name = course.Name
+            };
+
+            return View(vm);
+        }
+
+        // GET: Groups/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,43 +60,42 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var @group = await _context.Groups
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
+            if (@group == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            return View(@group);
         }
 
-        // GET: Courses/Create
-        [Authorize(Roles = ApplicationRoles.Admin)]
-        public IActionResult Create()
+        // GET: Groups/Create
+        public IActionResult Create(int? courseId)
         {
+            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name");
             return View();
         }
 
-        // POST: Courses/Create
+        // POST: Groups/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = ApplicationRoles.Admin)]
-        public async Task<IActionResult> Create([Bind("Name,ShortDescription,Description,Language")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseID, Name")] Group @group)
         {
             if (ModelState.IsValid)
             {
-                course.CreatedTimestamp = DateTime.UtcNow;
-                _context.Add(course);
+                _context.Add(@group);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(course);
+            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name", @group.CourseID);
+            return View(@group);
         }
 
-        // GET: Courses/Edit/5
-        [Authorize(Roles = ApplicationRoles.Admin)]
+        // GET: Groups/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,23 +103,23 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
+            var @group = await _context.Groups.FindAsync(id);
+            if (@group == null)
             {
                 return NotFound();
             }
-            return View(course);
+            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name", @group.CourseID);
+            return View(@group);
         }
 
-        // POST: Courses/Edit/5
+        // POST: Groups/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = ApplicationRoles.Admin)]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,ID,CreatedTimestamp,DeletedTimestamp,IsDeleted")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CreatedTimestamp,DeletedTimestamp,IsDeleted,CourseID")] Group @group)
         {
-            if (id != course.ID)
+            if (id != @group.ID)
             {
                 return NotFound();
             }
@@ -105,12 +128,12 @@ namespace ThesisSite.Controllers
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Update(@group);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.ID))
+                    if (!GroupExists(@group.ID))
                     {
                         return NotFound();
                     }
@@ -121,11 +144,11 @@ namespace ThesisSite.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(course);
+            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name", @group.CourseID);
+            return View(@group);
         }
 
-        // GET: Courses/Delete/5
-        [Authorize(Roles = ApplicationRoles.Admin)]
+        // GET: Groups/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,33 +156,31 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var @group = await _context.Groups
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
+            if (@group == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            return View(@group);
         }
 
-        // POST: Courses/Delete/5
+        // POST: Groups/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-
-            course.IsDeleted = true;
-            course.DeletedTimestamp = DateTimeOffset.Now;
-
+            var @group = await _context.Groups.FindAsync(id);
+            _context.Groups.Remove(@group);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CourseExists(int id)
+        private bool GroupExists(int id)
         {
-            return _context.Courses.Any(e => e.ID == id);
+            return _context.Groups.Any(e => e.ID == id);
         }
     }
 }

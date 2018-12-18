@@ -9,6 +9,8 @@ namespace ThesisSite.Domain
     {
         public int ID { get; set; }
 
+        public string Name { get; set; }
+
         public DateTimeOffset CreatedTimestamp { get; set; }
 
         public DateTimeOffset? DeletedTimestamp { get; set; }

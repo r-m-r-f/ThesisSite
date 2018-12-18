@@ -1,0 +1,16 @@
+﻿@using ThesisSite.ViewModel.Course
+@{
+    ViewData["Title"] = "CourseGroups";
+}
+
+@model CourseGroupsViewModel
+<h2>@Model.Name - groups</h2>
+
+@foreach(var item in Model.Groups)
+{
+    <div class="card">
+        <div class="card-body">
+            <p>@item.Name</p>
+        </div>
+    </div>
+}

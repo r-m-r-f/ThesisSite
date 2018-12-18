@@ -1,4 +1,5 @@
-﻿@model ThesisSite.Domain.Course
+﻿@using ThesisSite.Domain.Helpers
+@model ThesisSite.Domain.Course
 
 @{
     ViewData["Title"] = "Details";
@@ -43,6 +44,11 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    @if (User.IsInRole(ApplicationRoles.Admin))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.ID">Edit course</a>
+        <a asp-area="" asp-action="Create" asp-controller="Groups">Create group</a>
+        <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID">Manage groups</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

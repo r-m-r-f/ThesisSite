@@ -20,5 +20,7 @@ namespace ThesisSite.Domain
         public DateTime DueTo { get; set; }
 
         public Group Group { get; set; }
+
+        public IList<AssignmetsToStudent> AssignmetsToStudents { get; set; }
     }
 }
