@@ -5,50 +5,37 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+@*<div class="container-fluid">
 
-<div>
-    <h4>Course</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedTimestamp)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedTimestamp)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DeletedTimestamp)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DeletedTimestamp)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-    </dl>
+    </div>*@
+<h4>@Model.Name</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <h4>Description</h4>
+        <p class="text-left">@Model.Description</p>
+    </div>
+    <div class="col-md-4">
+        <div class="list-group">
+            @if (User.IsInRole(ApplicationRoles.Admin))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.ID" class="list-group-item list-group-item-action">Edit course</a>
+                <a asp-area="" asp-action="Create" asp-controller="Groups" asp-route-courseID="@Model.ID" class="list-group-item list-group-item-action">Create group</a>
+                <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID" class="list-group-item list-group-item-action">Manage groups</a>
+            }
+            @if (User.IsInRole(ApplicationRoles.Student))
+            {
+                <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID" class="list-group-item list-group-item-action">Groups</a>
+            }
+        </div>
+    </div>
 </div>
 <div>
-    @if (User.IsInRole(ApplicationRoles.Admin))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.ID">Edit course</a>
-        <a asp-area="" asp-action="Create" asp-controller="Groups">Create group</a>
-        <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID">Manage groups</a>
-    }
+    @*@if (User.IsInRole(ApplicationRoles.Admin))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.ID">Edit course</a>
+            <a asp-area="" asp-action="Create" asp-controller="Groups">Create group</a>
+            <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID">Manage groups</a>
+        }*@
     <a asp-action="Index">Back to List</a>
 </div>

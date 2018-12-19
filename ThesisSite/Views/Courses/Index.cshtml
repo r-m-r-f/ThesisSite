@@ -16,7 +16,7 @@
 
 @foreach(var item in Model)
 {
-    <div class="row">
+    @*<div class="row">
         <div class="col-md-4">
             <table class="table-bordered">
                 <tbody>
@@ -32,6 +32,14 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>*@
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">@item.Name</h2>
+            <p class="card-text">@item.ShortDescription</p>
+            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary">Details</a>
         </div>
     </div>
 }

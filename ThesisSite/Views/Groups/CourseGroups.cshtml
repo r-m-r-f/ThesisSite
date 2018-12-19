@@ -1,4 +1,5 @@
 ﻿@using ThesisSite.ViewModel.Course
+@using ThesisSite.Domain.Helpers
 @{
     ViewData["Title"] = "CourseGroups";
 }
@@ -6,11 +7,29 @@
 @model CourseGroupsViewModel
 <h2>@Model.Name - groups</h2>
 
-@foreach(var item in Model.Groups)
-{
-    <div class="card">
-        <div class="card-body">
-            <p>@item.Name</p>
+<div class="list-group">
+    @foreach (var item in Model.Groups)
+    {
+        <div class="container-fluid list-group-item">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>@item.Name</p>
+                </div>
+                <div class="col-md-4">
+                    @if (User.IsInRole(ApplicationRoles.Admin))
+                    {
+                        <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Details</a>
+                        <a asp-action="Edit" asp-controller="Groups" asp-route-id="@item.ID" class="btn btn-secondary">Edit</a>
+                        <a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@item.ID" asp-route-courseId="@Model.CourseId" class="btn btn-danger">Delete</a>
+                    }
+                    @if (User.IsInRole(ApplicationRoles.Student))
+                    {
+                        <a asp-action="Enroll" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Enroll</a>
+                    }
+                </div>
+
+            </div>
         </div>
-    </div>
-}
+
+    }
+</div>

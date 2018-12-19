@@ -1,24 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
+using ThesisSite.Domain.Helpers;
 using ThesisSite.ViewModel.Course;
+using ThesisSite.ViewModel.Group;
 
 namespace ThesisSite.Controllers
 {
     public class GroupsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public GroupsController(ApplicationDbContext context)
+        public GroupsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Groups
@@ -34,6 +40,7 @@ namespace ThesisSite.Controllers
 
         //}
 
+        [Authorize]
         public async Task<IActionResult> CourseGroups(int? courseId)
         {
             if ( courseId == null)
@@ -41,10 +48,12 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            var groups = await _context.Groups.Where(c => c.CourseID == courseId).ToListAsync();
-            var course = await _context.Courses.Where(c => c.ID == courseId).SingleOrDefaultAsync();
+            var groups = await _context.Groups.Where(c => c.CourseID == courseId && !c.IsDeleted).ToListAsync();
+            var course = await _context.Courses.SingleOrDefaultAsync(c => c.ID == courseId && !c.IsDeleted);
+
             var vm = new CourseGroupsViewModel
             {
+                CourseId = courseId.Value,
                 Groups = groups,
                 Name = course.Name
             };
@@ -53,6 +62,7 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Groups/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -71,11 +81,59 @@ namespace ThesisSite.Controllers
             return View(@group);
         }
 
+        public async Task<IActionResult> ListStudents(int? groupId)
+        {
+            if (groupId == null)
+            {
+                return NotFound();
+            }
+
+            var query = await _context.GroupEnrollments.Where(g => g.GroupID == groupId && !g.User.IsDeleted).Include(g => g.User).ToListAsync();
+            var students = query.Select(x => x.User);
+
+            return View(students);
+        }
+
+        public async Task<IActionResult> Enroll(int groupId)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var courseId = _context.Groups.SingleOrDefault(g => g.ID == groupId && !g.IsDeleted).CourseID;
+
+            var isAlreadyEnrolled = await _context.GroupEnrollments.AnyAsync(g => g.Group.CourseID == courseId && g.UserId == userId);
+
+            if(isAlreadyEnrolled)
+            {
+                return RedirectToAction("Details", "Courses", new { id = courseId });
+            }
+
+            var enrollment = new GroupEnrollment
+            {
+                UserId = userId,
+                GroupID = groupId
+            };
+
+            _context.GroupEnrollments.Add(enrollment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Courses", new { id = courseId });
+        }
+
         // GET: Groups/Create
+        [Authorize(Roles = ApplicationRoles.Admin)]
         public IActionResult Create(int? courseId)
         {
-            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name");
-            return View();
+            if (courseId == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new CreateGroupViewModel
+            {
+                CourseId = courseId.Value
+            };
+
+            return View(vm);
         }
 
         // POST: Groups/Create
@@ -83,16 +141,22 @@ namespace ThesisSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID, Name")] Group @group)
+        [Authorize(Roles = ApplicationRoles.Admin)]
+        public async Task<IActionResult> Create([Bind("Name, CourseId")] CreateGroupViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@group);
+                var group = new Group
+                {
+                    Name = vm.Name,
+                    CourseID = vm.CourseId
+                };
+
+                _context.Groups.Add(group);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Courses", new { id = vm.CourseId});
             }
-            ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Name", @group.CourseID);
-            return View(@group);
+            return View(vm);
         }
 
         // GET: Groups/Edit/5
@@ -149,22 +213,26 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Groups/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? groupId, int courseId)
         {
-            if (id == null)
+            if (groupId == null)
             {
                 return NotFound();
             }
 
-            var @group = await _context.Groups
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (@group == null)
+            var group = await _context.Groups.SingleOrDefaultAsync(g => g.ID == groupId && !g.IsDeleted);
+
+
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            group.IsDeleted = true;
+            group.DeletedTimestamp = DateTimeOffset.Now;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("CourseGroups", "Groups", new { courseId });
         }
 
         // POST: Groups/Delete/5
