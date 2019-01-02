@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisSite", "ThesisSite\ThesisSite.csproj", "{150CC921-08F9-49FC-8ADB-74E40F9C2449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThesisSite", "ThesisSite\ThesisSite.csproj", "{150CC921-08F9-49FC-8ADB-74E40F9C2449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisSite.Tests", "ThesisSite.Tests\ThesisSite.Tests.csproj", "{35082C8C-DE83-49BF-9A26-E3E3C9E49E4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{150CC921-08F9-49FC-8ADB-74E40F9C2449}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{150CC921-08F9-49FC-8ADB-74E40F9C2449}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{150CC921-08F9-49FC-8ADB-74E40F9C2449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35082C8C-DE83-49BF-9A26-E3E3C9E49E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35082C8C-DE83-49BF-9A26-E3E3C9E49E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35082C8C-DE83-49BF-9A26-E3E3C9E49E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35082C8C-DE83-49BF-9A26-E3E3C9E49E4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

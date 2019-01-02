@@ -26,6 +26,8 @@ namespace ThesisSite.Data
 
         public DbSet<GroupEnrollment> GroupEnrollments { get; set; }
 
+        public DbSet<FileUpload> FileUploads { get; set; }
+
         public override int SaveChanges()
         {
             UpdateTimestamps();
