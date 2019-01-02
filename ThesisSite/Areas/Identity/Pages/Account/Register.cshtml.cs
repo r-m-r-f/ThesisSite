@@ -97,7 +97,7 @@ namespace ThesisSite.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var role = user.UserName.StartsWith("admin") ? ApplicationRoles.Admin : ApplicationRoles.Student;
+                    var role = user.UserName.StartsWith("admin", StringComparison.OrdinalIgnoreCase) ? ApplicationRoles.Admin : ApplicationRoles.Student;
                     var isRoleAdded = await _userManager.AddToRoleAsync(user, role);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

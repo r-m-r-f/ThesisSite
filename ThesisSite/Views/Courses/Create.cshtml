@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,22 +34,22 @@
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-            <label asp-for="CreatedTimestamp" class="control-label"></label>
-            <input asp-for="CreatedTimestamp" class="form-control" />
-            <span asp-validation-for="CreatedTimestamp" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DeletedTimestamp" class="control-label"></label>
-            <input asp-for="DeletedTimestamp" class="form-control" />
-            <span asp-validation-for="DeletedTimestamp" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <div class="checkbox">
-                <label>
-                    <input asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-        </div>*@
+                    <label asp-for="CreatedTimestamp" class="control-label"></label>
+                    <input asp-for="CreatedTimestamp" class="form-control" />
+                    <span asp-validation-for="CreatedTimestamp" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DeletedTimestamp" class="control-label"></label>
+                    <input asp-for="DeletedTimestamp" class="form-control" />
+                    <span asp-validation-for="DeletedTimestamp" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                        </label>
+                    </div>
+                </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

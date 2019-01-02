@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
+using ThesisSite.ViewModel.Assignments;
 
 namespace ThesisSite.Controllers
 {
@@ -46,10 +46,15 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Assignments/Create
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
-            ViewData["GroupId"] = new SelectList(_context.Groups, "ID", "ID");
-            return View();
+            var vm = new CreateAssignmentViewModel
+            {
+                GroupId = groupId,
+                DueTo = DateTimeOffset.Now.AddDays(14)
+            };
+
+            return View(vm);
         }
 
         // POST: Assignments/Create
@@ -57,16 +62,31 @@ namespace ThesisSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,DueTo,ID,CreatedTimestamp,DeletedTimestamp,IsDeleted")] Assignment assignment)
+        public async Task<IActionResult> Create([Bind("GroupId,DueTo,Name, Description")] CreateAssignmentViewModel vm)
         {
             if (ModelState.IsValid)
             {
+                var assignment = new Assignment
+                {
+                    GroupId = vm.GroupId,
+                    DueTo = vm.DueTo.DateTime,
+                    Name = vm.Name,
+                    Description = vm.Description
+                };
+
                 _context.Add(assignment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("ListStudents", "Groups", new { groupId = vm.GroupId });
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "ID", "ID", assignment.GroupId);
-            return View(assignment);
+            return RedirectToAction("Index", "Courses");
+        }
+
+        public async Task<IActionResult> ActiveAssignments(int groupId)
+        {
+            var now = DateTimeOffset.Now;
+
+            var assignments = await _context.Assignments.Where(x => !x.IsDeleted && x.GroupId == groupId && x.DueTo > now).ToListAsync();
+            return null;
         }
 
         // GET: Assignments/Edit/5
@@ -82,7 +102,7 @@ namespace ThesisSite.Controllers
             {
                 return NotFound();
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "ID", "ID", assignment.GroupId);
+
             return View(assignment);
         }
 

@@ -20,11 +20,13 @@
                     {
                         <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Details</a>
                         <a asp-action="Edit" asp-controller="Groups" asp-route-id="@item.ID" class="btn btn-secondary">Edit</a>
-                        <a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@item.ID" asp-route-courseId="@Model.CourseId" class="btn btn-danger">Delete</a>
+                        <a asp-action="Create" asp-controller="Assignments" asp-route-groupId="@item.ID" class="btn btn-default">Add assignment</a>
+                        @*<a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@item.ID" asp-route-courseId="@Model.CourseId" class="btn btn-danger">Delete</a>*@
                     }
                     @if (User.IsInRole(ApplicationRoles.Student))
                     {
                         <a asp-action="Enroll" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Enroll</a>
+                        <a class="btn btn-default">Assignments</a>
                     }
                 </div>
 
