@@ -88,7 +88,7 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            var query = await _context.GroupEnrollments.Where(g => g.GroupID == groupId && !g.User.IsDeleted).Include(g => g.User).ToListAsync();
+            var query = await _context.GroupEnrollments.Where(g => g.GroupId == groupId && !g.User.IsDeleted).Include(g => g.User).ToListAsync();
             var students = query.Select(x => x.User);
 
             return View(students);
@@ -110,7 +110,7 @@ namespace ThesisSite.Controllers
             var enrollment = new GroupEnrollment
             {
                 UserId = userId,
-                GroupID = groupId
+                GroupId = groupId
             };
 
             _context.GroupEnrollments.Add(enrollment);
@@ -142,14 +142,15 @@ namespace ThesisSite.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ApplicationRoles.Admin)]
-        public async Task<IActionResult> Create([Bind("Name, CourseId")] CreateGroupViewModel vm)
+        public async Task<IActionResult> Create([Bind("Name, Limit, CourseId")] CreateGroupViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 var group = new Group
                 {
                     Name = vm.Name,
-                    CourseID = vm.CourseId
+                    CourseID = vm.CourseId,
+                    Limit = vm.Limit
                 };
 
                 _context.Groups.Add(group);

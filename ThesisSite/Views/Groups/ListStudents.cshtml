@@ -4,28 +4,30 @@
     ViewData["Title"] = "ListStudents";
 }
 
+
 <h2>ListStudents</h2>
 
-<table class="table">
+<table id="studentlist" class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IndexNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
@@ -40,11 +42,28 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a @*asp-action="Edit" asp-route-id="@item.ID"*@ class="btn btn-primary">Edit</a> |
-                <a @*asp-action="Details" asp-route-id="@item.ID"*@ class="btn btn-secondary">Details</a> |
-                <a @*asp-action="Delete" asp-route-id="@item.ID"*@ class="btn btn-danger">Delete</a>
+                <a @*asp-action="Edit" asp-route-id="@item.ID" *@ class="btn btn-primary">Edit</a> |
+                <a @*asp-action="Details" asp-route-id="@item.ID" *@ class="btn btn-secondary">Details</a> |
+                <a @*asp-action="Delete" asp-route-id="@item.ID" *@ class="btn btn-danger">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+@section Scripts
+{
+    <link rel="stylesheet" href="~/lib/datatables/css/dataTables.bootstrap.css" />
+    <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#studentlist').DataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": 4 }
+                ]
+            });
+        });
+    </script>
+}
+

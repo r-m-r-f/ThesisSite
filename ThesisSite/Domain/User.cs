@@ -16,6 +16,9 @@ namespace ThesisSite.Domain
         public string IndexNumber { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public IList<GroupEnrollment> GroupEnrollments { get; set; }
+
         //[Required]
         //[DataType(DataType.EmailAddress)]
         //public string Email { get; set; }

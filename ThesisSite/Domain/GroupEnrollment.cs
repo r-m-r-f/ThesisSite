@@ -17,7 +17,7 @@ namespace ThesisSite.Domain
 
         public string UserId { get; set; }
 
-        public int GroupID { get; set; }
+        public int GroupId { get; set; }
 
         public ApplicationUser User { get; set; }
 

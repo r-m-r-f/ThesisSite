@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +82,7 @@ namespace ThesisSite.Controllers
             return RedirectToAction("Index", "Courses");
         }
 
+        [Authorize]
         public async Task<IActionResult> ActiveAssignments(int groupId)
         {
             var now = DateTimeOffset.Now;

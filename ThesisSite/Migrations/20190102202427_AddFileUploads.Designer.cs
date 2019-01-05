@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190102202427_AddFileUploads")]
+    partial class AddFileUploads
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,8 +297,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<int?>("Limit");
-
                     b.Property<string>("Name");
 
                     b.HasKey("ID");
@@ -316,7 +316,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<DateTimeOffset?>("DeletedTimestamp");
 
-                    b.Property<int>("GroupId");
+                    b.Property<int>("GroupID");
 
                     b.Property<bool>("IsDeleted");
 
@@ -324,7 +324,7 @@ namespace ThesisSite.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupID");
 
                     b.HasIndex("UserId");
 
@@ -425,11 +425,11 @@ namespace ThesisSite.Migrations
                 {
                     b.HasOne("ThesisSite.Domain.Group", "Group")
                         .WithMany("GroupEnrollments")
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("GroupID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
-                        .WithMany("GroupEnrollments")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 

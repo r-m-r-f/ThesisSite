@@ -10,5 +10,7 @@ namespace ThesisSite.ViewModel.Group
         public int CourseId { get; set; }
 
         public string Name { get; set; }
+
+        public int? Limit { get; set; }
     }
 }

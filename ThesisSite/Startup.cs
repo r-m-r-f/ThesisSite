@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ThesisSite.Domain;
 using ThesisSite.Domain.Helpers;
+using ThesisSite.Services;
+using ThesisSite.Services.Interface;
 
 namespace ThesisSite
 {
@@ -52,6 +54,7 @@ namespace ThesisSite
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<ICourseService, CourseService>();
 
             services.Configure<IdentityOptions>(options =>
             {

@@ -21,6 +21,8 @@ namespace ThesisSite.Domain
 
         public Course Course { get; set; }
 
+        public int? Limit { get; set; }
+
         public IList<GroupEnrollment> GroupEnrollments { get; set; }
     }
 }

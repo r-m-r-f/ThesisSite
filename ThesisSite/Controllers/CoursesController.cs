@@ -1,43 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ThesisSite.Data;
 using ThesisSite.Domain;
 using ThesisSite.Domain.Helpers;
+using ThesisSite.Services.Interface;
 
 namespace ThesisSite.Controllers
 {
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICourseService _courseService;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ICourseService courseService)
         {
-            _context = context;
+            _courseService = courseService;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var data = await _context.Courses.Where(c => !c.IsDeleted).ToListAsync();
+            var data = await _courseService.GetAll();
             return View(data);
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var course = await _courseService.GetCourseById(id);
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.ID == id);
             if (course == null)
             {
                 return NotFound();
@@ -63,9 +54,7 @@ namespace ThesisSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                course.CreatedTimestamp = DateTime.UtcNow;
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await _courseService.AddCourse(course);
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -73,14 +62,10 @@ namespace ThesisSite.Controllers
 
         // GET: Courses/Edit/5
         [Authorize(Roles = ApplicationRoles.Admin)]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var course = await _courseService.GetCourseById(id);
 
-            var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -105,61 +90,32 @@ namespace ThesisSite.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    await _courseService.UpdateCourse(course);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
+                    //if (!CourseExists(course.ID))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
+                    //    throw;
+                    //}
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
         }
 
-        // GET: Courses/Delete/5
-        [Authorize(Roles = ApplicationRoles.Admin)]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-
-            course.IsDeleted = true;
-            course.DeletedTimestamp = DateTimeOffset.Now;
-
-            await _context.SaveChangesAsync();
+            await _courseService.DeleteCourse(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.ID == id);
         }
     }
 }

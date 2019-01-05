@@ -67,7 +67,7 @@ namespace ThesisSite.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupID);
+            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupId);
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", groupEnrollment.UserId);
             return View(groupEnrollment);
         }
@@ -85,7 +85,7 @@ namespace ThesisSite.Controllers
             {
                 return NotFound();
             }
-            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupID);
+            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupId);
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", groupEnrollment.UserId);
             return View(groupEnrollment);
         }
@@ -122,7 +122,7 @@ namespace ThesisSite.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupID);
+            ViewData["GroupID"] = new SelectList(_context.Groups, "ID", "ID", groupEnrollment.GroupId);
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", groupEnrollment.UserId);
             return View(groupEnrollment);
         }
