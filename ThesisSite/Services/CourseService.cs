@@ -26,7 +26,7 @@ namespace ThesisSite.Services
         public async Task<Course> GetCourseById(int id)
         {
             return await _context.Courses
-                .FirstOrDefaultAsync(m => m.ID == id && !m.IsDeleted);
+                .SingleOrDefaultAsync(m => m.ID == id && !m.IsDeleted);
         }
 
         public bool Exists(int id)

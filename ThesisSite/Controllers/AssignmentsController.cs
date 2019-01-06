@@ -1,12 +1,17 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
+using ThesisSite.Services.Interface;
 using ThesisSite.ViewModel.Assignments;
 
 namespace ThesisSite.Controllers
@@ -14,10 +19,15 @@ namespace ThesisSite.Controllers
     public class AssignmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAssignmentsService _assignmentsService;
 
-        public AssignmentsController(ApplicationDbContext context)
+
+        public AssignmentsController(ApplicationDbContext context, IAssignmentsService assignmentsService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+            _assignmentsService = assignmentsService;
         }
 
         // GET: Assignments
@@ -25,6 +35,37 @@ namespace ThesisSite.Controllers
         {
             var applicationDbContext = _context.Assignments.Include(a => a.Group);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> UploadSolution(int assignmentId)
+        {
+            var vm = new UploadSolutionViewModel
+            {
+                AssignmentId = assignmentId
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadSolution(UploadSolutionViewModel vm)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            //if (!Directory.Exists($"dupa/{vm.AssignmentId}/{userId}"))
+            //{
+            //    Directory.CreateDirectory($"dupa/{vm.AssignmentId}/{userId}");
+            //}
+
+            //using (var fs = new FileStream($"dupa/{vm.AssignmentId}/{userId}/{vm.SolutionFile.FileName}", FileMode.Create))
+            //{
+            //    await vm.SolutionFile.CopyToAsync(fs);
+            //}
+
+            await _assignmentsService.UploadSolution(userId, vm);
+
+            return RedirectToAction("Details", "Courses");
         }
 
         // GET: Assignments/Details/5

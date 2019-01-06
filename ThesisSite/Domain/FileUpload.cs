@@ -14,5 +14,7 @@ namespace ThesisSite.Domain
         public int AssignmentId { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }
+
+        public string Path { get; set; }
     }
 }

@@ -1,0 +1,15 @@
+﻿@model ThesisSite.ViewModel.Assignments.UploadSolutionViewModel
+@{
+    ViewData["Title"] = "UploadSolution";
+}
+
+<h2>UploadSolution</h2>
+
+<form asp-action="UploadSolution" enctype="multipart/form-data">
+    <input type="hidden" asp-for="AssignmentId"/>
+    <label asp-for="SolutionFile" class="control-label"></label>
+    <input asp-for="SolutionFile" type="file" class="form-control" />
+    
+    <input type="submit" class="btn btn-default"/>
+</form>
+

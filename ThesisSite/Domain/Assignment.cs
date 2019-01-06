@@ -23,6 +23,8 @@ namespace ThesisSite.Domain
 
         public Group Group { get; set; }
 
+        public int UploadLimit { get; set; }
+
         public IList<AssignmetsToStudent> AssignmetsToStudents { get; set; }
     }
 }
