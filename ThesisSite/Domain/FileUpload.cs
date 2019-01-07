@@ -9,12 +9,14 @@ namespace ThesisSite.Domain
     {
         public int Id { get; set; }
 
-        public string UserId { get; set; }
+        //public string UserId { get; set; }
 
-        public int AssignmentId { get; set; }
+        public int AssignmentToStudentId { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }
 
         public string Path { get; set; }
+
+        public AssignmetsToStudent AssignmetsToStudent { get; set; }
     }
 }

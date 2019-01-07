@@ -16,5 +16,9 @@ namespace ThesisSite.Domain
         public ApplicationUser User { get; set; }
 
         public Assignment Assignment { get; set; }
+
+        public IList<FileUpload> Uploads { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

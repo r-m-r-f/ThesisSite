@@ -29,45 +29,45 @@ namespace ThesisSite.Services
                 .SingleOrDefaultAsync(x => x.ID == id && !x.IsDeleted);
         }
 
-        public async Task<IEnumerable<FileUpload>> GetUploadedSolutions(string userId, int assignmentId)
-        {
-            return await _context.FileUploads
-                .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
-                .OrderBy(x => x.Timestamp)
-                .ToListAsync();
-        }
+        //public async Task<IEnumerable<FileUpload>> GetUploadedSolutions(string userId, int assignmentId)
+        //{
+        //    return await _context.FileUploads
+        //        .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
+        //        .OrderBy(x => x.Timestamp)
+        //        .ToListAsync();
+        //}
 
-        public async Task UploadSolution(string userId, UploadSolutionViewModel vm)
-        {
-            var now = DateTimeOffset.Now;
-            var assignment = await GetAssignmentById(vm.AssignmentId);
-            var count = await GetUploadedSolutionsCount(userId, vm.AssignmentId);
+        //public async Task UploadSolution(string userId, UploadSolutionViewModel vm)
+        //{
+        //    var now = DateTimeOffset.Now;
+        //    var assignment = await GetAssignmentById(vm.AssignmentId);
+        //    var count = await GetUploadedSolutionsCount(userId, vm.AssignmentId);
 
-            if (assignment.UploadLimit <= count)
-            {
-                throw new ExcessiveFileUploadException();
-            }
+        //    if (assignment.UploadLimit <= count)
+        //    {
+        //        throw new ExcessiveFileUploadException();
+        //    }
 
-            var path = await _uploadService.UploadFile(userId, vm);
+        //    var path = await _uploadService.UploadFile(userId, vm);
 
-            var fileUpload = new FileUpload
-            {
-                AssignmentId = vm.AssignmentId,
-                UserId = userId,
-                Timestamp = now,
-                Path = path
-            };
+        //    var fileUpload = new FileUpload
+        //    {
+        //        AssignmentId = vm.AssignmentId,
+        //        UserId = userId,
+        //        Timestamp = now,
+        //        Path = path
+        //    };
 
-            _context.Add(fileUpload);
-            await _context.SaveChangesAsync();
-        }
+        //    _context.Add(fileUpload);
+        //    await _context.SaveChangesAsync();
+        //}
 
-        private async Task<int> GetUploadedSolutionsCount(string userId, int assignmentId)
-        {
-            return await _context.FileUploads
-                .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
-                .CountAsync();
-        }
+        //private async Task<int> GetUploadedSolutionsCount(string userId, int assignmentId)
+        //{
+        //    return await _context.FileUploads
+        //        .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
+        //        .CountAsync();
+        //}
 
     }
 }

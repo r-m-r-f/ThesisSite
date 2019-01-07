@@ -19,6 +19,8 @@ namespace ThesisSite.Domain
 
         public int GroupId { get; set; }
 
+        public bool IsActive { get; set; }
+
         public DateTime DueTo { get; set; }
 
         public Group Group { get; set; }

@@ -21,13 +21,18 @@
                     {
                         <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Details</a>
                         <div class="btn-group">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Edit
+                                <span class="caret"></span>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="dropdown-item">Delete student</a>
-                                <a asp-action="AddStudent" asp-controller="Groups" asp-route-groupId="@item.ID" class="dropdown-item">Add student</a>
-                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn">Delete student</a>
+                                </li>
+                                <li>
+                                    <a asp-action="AddStudent" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn">Add student</a>
+                                </li>
+                            </ul>
                         </div>                 
                         <a asp-action="Create" asp-controller="Assignments" asp-route-groupId="@item.ID" class="btn btn-default">Add assignment</a>
 
