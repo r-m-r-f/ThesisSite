@@ -1,14 +1,12 @@
 ﻿@using ThesisSite.Domain.Helpers
 @using Westwind.AspNetCore.Markdown
-@model ThesisSite.Domain.Course
+@*@model ThesisSite.Domain.Course*@
+@model ThesisSite.ViewModel.Course.CourseDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
 }
 
-@*<div class="container-fluid">
-
-    </div>*@
 <h4>@Model.Name</h4>
 <hr />
 <div class="row">
@@ -26,7 +24,14 @@
             }
             @if (User.IsInRole(ApplicationRoles.Student))
             {
-                <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID" class="list-group-item list-group-item-action">Groups</a>
+                if (Model.GroupId == null)
+                {
+                    <a asp-area="" asp-action="CourseGroups" asp-controller="Groups" asp-route-courseID="@Model.ID" class="list-group-item list-group-item-action">Groups</a>
+                }
+                else
+                {
+                    <a asp-action="Details" asp-controller="Groups" asp-route-id="@Model.GroupId.Value">Assignments</a>
+                }
             }
         </div>
     </div>

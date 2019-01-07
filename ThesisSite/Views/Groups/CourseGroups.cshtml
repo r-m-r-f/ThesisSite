@@ -14,18 +14,31 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>@item.Name</p>
+                    <p>Enrolled @item.StudentCount of @item.Limit </p>
                 </div>
                 <div class="col-md-4">
                     @if (User.IsInRole(ApplicationRoles.Admin))
                     {
                         <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Details</a>
-                        <a asp-action="Edit" asp-controller="Groups" asp-route-id="@item.ID" class="btn btn-secondary">Edit</a>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Edit
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" class="dropdown-item">Delete student</a>
+                                <a asp-action="AddStudent" asp-controller="Groups" asp-route-groupId="@item.ID" class="dropdown-item">Add student</a>
+                            </div>
+                        </div>                 
                         <a asp-action="Create" asp-controller="Assignments" asp-route-groupId="@item.ID" class="btn btn-default">Add assignment</a>
+
                         @*<a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@item.ID" asp-route-courseId="@Model.CourseId" class="btn btn-danger">Delete</a>*@
                     }
                     @if (User.IsInRole(ApplicationRoles.Student))
                     {
-                        <a asp-action="Enroll" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Enroll</a>
+                        if (item.CanEnroll)
+                        {
+                            <a asp-action="Enroll" asp-controller="Groups" asp-route-groupId="@item.ID" class="btn btn-primary">Enroll</a>
+                        }
                         <a class="btn btn-default">Assignments</a>
                     }
                 </div>

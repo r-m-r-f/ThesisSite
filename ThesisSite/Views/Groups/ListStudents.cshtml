@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ThesisSite.Domain.ApplicationUser>
+﻿@model ThesisSite.ViewModel.Group.ListStudentsViewModel
 
 @{
     ViewData["Title"] = "ListStudents";
@@ -11,22 +11,22 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstName)
+            First name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            Last name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IndexNumber)
+            Index number
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            Email
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Students)
     {
         <tr>
             <td>
@@ -42,9 +42,7 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a @*asp-action="Edit" asp-route-id="@item.ID" *@ class="btn btn-primary">Edit</a> |
-                <a @*asp-action="Details" asp-route-id="@item.ID" *@ class="btn btn-secondary">Details</a> |
-                <a @*asp-action="Delete" asp-route-id="@item.ID" *@ class="btn btn-danger">Delete</a>
+                <a asp-action="RemoveFromGroup" asp-route-studentId="@item.Id" asp-route-groupId="@Model.GroupId" class="btn btn-danger">Delete</a>
             </td>
         </tr>
     }

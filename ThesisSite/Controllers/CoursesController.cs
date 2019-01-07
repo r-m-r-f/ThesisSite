@@ -1,19 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThesisSite.Domain;
 using ThesisSite.Domain.Helpers;
 using ThesisSite.Services.Interface;
+using ThesisSite.ViewModel.Course;
 
 namespace ThesisSite.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ICourseService _courseService;
+        private readonly IGroupsService _groupsService;
 
-        public CoursesController(ICourseService courseService)
+        public CoursesController(ICourseService courseService, IGroupsService groupsService)
         {
+            _groupsService = groupsService;
             _courseService = courseService;
         }
 
@@ -34,7 +38,20 @@ namespace ThesisSite.Controllers
                 return NotFound();
             }
 
-            return View(course);
+            var vm = new CourseDetailsViewModel
+            {
+                Description = course.Description,
+                ID = course.ID,
+                Name = course.Name
+            };
+
+            if (User.IsInRole(ApplicationRoles.Student))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                vm.GroupId = await _groupsService.GetEnrolledGroupId(userId, course.ID);
+            }
+
+            return View(vm);
         }
 
         // GET: Courses/Create

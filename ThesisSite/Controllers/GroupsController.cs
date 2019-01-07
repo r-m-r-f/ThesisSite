@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using ThesisSite.Data;
 using ThesisSite.Domain;
 using ThesisSite.Domain.Helpers;
+using ThesisSite.Extensions;
 using ThesisSite.Services;
 using ThesisSite.Services.Interface;
 using ThesisSite.ViewModel.Course;
@@ -44,7 +45,8 @@ namespace ThesisSite.Controllers
         [Authorize]
         public async Task<IActionResult> CourseGroups(int courseId)
         {
-            var groups = await _groupsService.GetCourseGroups(courseId);
+            //var groups = await _groupsService.GetCourseGroups(courseId);
+            var groups = await _groupsService.GetCourseGroupDtosAsync(courseId);
             var course = await _courseService.GetCourseById(courseId);
 
             var vm = new CourseGroupsViewModel
@@ -80,7 +82,13 @@ namespace ThesisSite.Controllers
         {
             var students = await _groupsService.GetEnrolledStudents(groupId);
 
-            return View(students);
+            var vm = new ListStudentsViewModel
+            {
+                GroupId = groupId,
+                Students = students.Select(x => x.ToStudentDto())
+            };
+
+            return View(vm);
         }
 
         public async Task<IActionResult> Enroll(int groupId)
@@ -93,7 +101,7 @@ namespace ThesisSite.Controllers
 
             //var courseId = _context.Groups.SingleOrDefault(g => g.ID == groupId && !g.IsDeleted).CourseID;
 
-            //var isEnrolled = await _context.GroupEnrollments.AnyAsync(g => g.Group.CourseID == courseId && g.UserId == userId);
+            //var isEnrolled = await _context.GroupEnrollments.AnyAsync(g => g.Group.CourseID == courseId && g.UserId == studentId);
 
             //if(isEnrolled)
             //{
@@ -102,7 +110,7 @@ namespace ThesisSite.Controllers
 
             //var enrollment = new GroupEnrollment
             //{
-            //    UserId = userId,
+            //    UserId = studentId,
             //    GroupId = groupId
             //};
 
@@ -110,6 +118,26 @@ namespace ThesisSite.Controllers
             //await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Courses", new { id = group.CourseID });
+        }
+
+        public async Task<IActionResult> AddStudent(int groupId)
+        {
+            var students = await _groupsService.GetNotEnrolledUsers(groupId);
+
+            var vm = new ListStudentsViewModel
+            {
+                GroupId = groupId,
+                Students = students.Select(x => x.ToStudentDto())
+            };
+
+            return View(vm);
+        }
+
+        [Authorize(Roles = ApplicationRoles.Admin)]
+        public async Task<IActionResult> AddStudentToGroup(string studentId, int groupId)
+        {
+            await _groupsService.Enroll(studentId, groupId);
+            return RedirectToAction("AddStudent", new { studentId, groupId });
         }
 
         // GET: Groups/Create
@@ -134,19 +162,17 @@ namespace ThesisSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var group = new Group
-                //{
-                //    Name = vm.Name,
-                //    CourseID = vm.CourseId,
-                //    Limit = vm.Limit
-                //};
-
-                //_context.Groups.Add(group);
-                //await _context.SaveChangesAsync();
                 await _groupsService.CreateGroup(vm);
                 return RedirectToAction("Details", "Courses", new { id = vm.CourseId});
             }
             return View(vm);
+        }
+
+        //TODO: Change to POST
+        public async Task<IActionResult> RemoveFromGroup(string studentId, int groupId)
+        {
+            await _groupsService.Withdraw(studentId, groupId);
+            return RedirectToAction("ListStudents", new {groupId});
         }
 
         //// GET: Groups/Edit/5

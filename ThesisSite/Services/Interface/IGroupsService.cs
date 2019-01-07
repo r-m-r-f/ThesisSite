@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ThesisSite.Domain;
+using ThesisSite.DTOs;
 using ThesisSite.ViewModel.Group;
 
 namespace ThesisSite.Services.Interface
@@ -17,5 +18,9 @@ namespace ThesisSite.Services.Interface
         Task CreateGroup(CreateGroupViewModel vm);
         Task Enroll(string userId, int groupId);
         Task<int> GetEnrolledStudentsCount(int groupId);
+        Task<int?> GetEnrolledGroupId(string userId, int courseId);
+        Task Withdraw(string userId, int groupId);
+        Task<IEnumerable<GroupDto>> GetCourseGroupDtosAsync(int courseId);
+        Task<IEnumerable<ApplicationUser>> GetNotEnrolledUsers(int groupId);
     }
 }

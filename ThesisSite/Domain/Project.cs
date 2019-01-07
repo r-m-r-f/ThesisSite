@@ -12,6 +12,6 @@ namespace ThesisSite.Domain
         public DateTimeOffset? DeletedTimestamp { get; set; }
         public bool IsDeleted { get; set; }
 
-        public IList<Assignment> 
+        public IList<Assignment> Topics { get; set; }
     }
 }
