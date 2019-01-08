@@ -8,7 +8,7 @@ namespace ThesisSite.Domain
 {
     public class Course : IBaseEntity
     {      
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public DateTimeOffset CreatedTimestamp { get; set; }
 

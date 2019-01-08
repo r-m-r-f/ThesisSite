@@ -37,7 +37,7 @@ namespace ThesisSite.Controllers
             var groupEnrollment = await _context.GroupEnrollments
                 .Include(g => g.Group)
                 .Include(g => g.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (groupEnrollment == null)
             {
                 return NotFound();
@@ -97,7 +97,7 @@ namespace ThesisSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,CreatedTimestamp,DeletedTimestamp,IsDeleted,UserId,GroupID")] GroupEnrollment groupEnrollment)
         {
-            if (id != groupEnrollment.ID)
+            if (id != groupEnrollment.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace ThesisSite.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GroupEnrollmentExists(groupEnrollment.ID))
+                    if (!GroupEnrollmentExists(groupEnrollment.Id))
                     {
                         return NotFound();
                     }
@@ -138,7 +138,7 @@ namespace ThesisSite.Controllers
             var groupEnrollment = await _context.GroupEnrollments
                 .Include(g => g.Group)
                 .Include(g => g.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (groupEnrollment == null)
             {
                 return NotFound();
@@ -160,7 +160,7 @@ namespace ThesisSite.Controllers
 
         private bool GroupEnrollmentExists(int id)
         {
-            return _context.GroupEnrollments.Any(e => e.ID == id);
+            return _context.GroupEnrollments.Any(e => e.Id == id);
         }
     }
 }

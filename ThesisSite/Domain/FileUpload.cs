@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace ThesisSite.Domain
 {
-    public class FileUpload
+    public class FileUpload : IBaseEntity
     {
         public int Id { get; set; }
+        public DateTimeOffset CreatedTimestamp { get; set; }
+        public DateTimeOffset? DeletedTimestamp { get; set; }
+        public bool IsDeleted { get; set; }
 
         //public string UserId { get; set; }
 

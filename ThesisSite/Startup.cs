@@ -55,7 +55,9 @@ namespace ThesisSite
                 .AddDefaultTokenProviders();
 
             services.AddScoped<ICourseService, CourseService>()
-                .AddScoped<IGroupsService, GroupsService>();
+                .AddScoped<IGroupsService, GroupsService>()
+                .AddScoped<IAssignmentsService, AssignmentsService>()
+                .AddScoped<IUploadService, UploadService>();
 
             services.Configure<IdentityOptions>(options =>
             {

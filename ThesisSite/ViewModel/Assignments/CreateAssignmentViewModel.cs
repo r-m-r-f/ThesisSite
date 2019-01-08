@@ -1,4 +1,5 @@
 ﻿using System;
+using ThesisSite.Domain;
 
 namespace ThesisSite.ViewModel.Assignments
 {
@@ -10,6 +11,22 @@ namespace ThesisSite.ViewModel.Assignments
 
         public DateTimeOffset DueTo { get; set; }
 
+        public string ShortDescription { get; set; }
+
         public string Description { get; set; }
+
+        public Assignment ToAssignment()
+        {
+            return new Assignment
+            {
+                GroupId = GroupId,
+                Name = Name,
+                DueTo = DueTo,
+                ShortDescription = ShortDescription,
+                Description = Description,
+                UploadLimit = 5,
+                IsActive = false
+            };
+        }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190107230648_ChangeAssignments")]
+    partial class ChangeAssignments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,10 +235,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<int>("AssignmentId");
 
-                    b.Property<DateTimeOffset>("CreatedTimestamp");
-
-                    b.Property<DateTimeOffset?>("DeletedTimestamp");
-
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("UserId");
@@ -286,12 +284,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<int?>("AssignmetsToStudentId");
 
-                    b.Property<DateTimeOffset>("CreatedTimestamp");
-
-                    b.Property<DateTimeOffset?>("DeletedTimestamp");
-
-                    b.Property<bool>("IsDeleted");
-
                     b.Property<string>("Path");
 
                     b.Property<DateTimeOffset>("Timestamp");
@@ -308,8 +300,6 @@ namespace ThesisSite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AssignmentId");
 
                     b.Property<int>("CourseID");
 
@@ -407,13 +397,7 @@ namespace ThesisSite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTimeOffset>("CreatedTimestamp");
-
-                    b.Property<DateTimeOffset?>("DeletedTimestamp");
-
                     b.Property<int>("Grade");
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<int>("TopicId");
 
@@ -476,7 +460,7 @@ namespace ThesisSite.Migrations
             modelBuilder.Entity("ThesisSite.Domain.Assignment", b =>
                 {
                     b.HasOne("ThesisSite.Domain.Group", "Group")
-                        .WithMany("Assignments")
+                        .WithMany()
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -484,7 +468,7 @@ namespace ThesisSite.Migrations
             modelBuilder.Entity("ThesisSite.Domain.AssignmetsToStudent", b =>
                 {
                     b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
-                        .WithMany()
+                        .WithMany("AssignmetsToStudents")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -531,7 +515,7 @@ namespace ThesisSite.Migrations
             modelBuilder.Entity("ThesisSite.Domain.Topic", b =>
                 {
                     b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
-                        .WithMany("Topics")
+                        .WithMany()
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

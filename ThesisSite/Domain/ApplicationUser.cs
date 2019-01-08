@@ -19,6 +19,8 @@ namespace ThesisSite.Domain
 
         public IList<GroupEnrollment> GroupEnrollments { get; set; }
 
+        public IList<TopicToStudent> Topics { get; set; }
+
         //[Required]
         //[DataType(DataType.EmailAddress)]
         //public string Email { get; set; }

@@ -31,10 +31,13 @@ namespace ThesisSite.Controllers
         }
 
         // GET: Assignments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int groupId)
         {
-            var applicationDbContext = _context.Assignments.Include(a => a.Group);
-            return View(await applicationDbContext.ToListAsync());
+            //var applicationDbContext = _context.Assignments.Include(a => a.Group);
+            //return View(await applicationDbContext.ToListAsync());
+
+            var assignments = await _assignmentsService.GetAssignmentsFromGroup(groupId);
+            return null;
         }
 
         public async Task<IActionResult> UploadSolution(int assignmentId)
@@ -53,17 +56,7 @@ namespace ThesisSite.Controllers
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //if (!Directory.Exists($"dupa/{vm.AssignmentId}/{userId}"))
-            //{
-            //    Directory.CreateDirectory($"dupa/{vm.AssignmentId}/{userId}");
-            //}
-
-            //using (var fs = new FileStream($"dupa/{vm.AssignmentId}/{userId}/{vm.SolutionFile.FileName}", FileMode.Create))
-            //{
-            //    await vm.SolutionFile.CopyToAsync(fs);
-            //}
-
-            await _assignmentsService.UploadSolution(userId, vm);
+            //await _assignmentsService.UploadSolution(userId, vm);
 
             return RedirectToAction("Details", "Courses");
         }
@@ -78,7 +71,7 @@ namespace ThesisSite.Controllers
 
             var assignment = await _context.Assignments
                 .Include(a => a.Group)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (assignment == null)
             {
                 return NotFound();
@@ -156,7 +149,7 @@ namespace ThesisSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GroupId,DueTo,ID,CreatedTimestamp,DeletedTimestamp,IsDeleted")] Assignment assignment)
         {
-            if (id != assignment.ID)
+            if (id != assignment.Id)
             {
                 return NotFound();
             }
@@ -170,7 +163,7 @@ namespace ThesisSite.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AssignmentExists(assignment.ID))
+                    if (!AssignmentExists(assignment.Id))
                     {
                         return NotFound();
                     }
@@ -195,7 +188,7 @@ namespace ThesisSite.Controllers
 
             var assignment = await _context.Assignments
                 .Include(a => a.Group)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (assignment == null)
             {
                 return NotFound();
@@ -217,7 +210,7 @@ namespace ThesisSite.Controllers
 
         private bool AssignmentExists(int id)
         {
-            return _context.Assignments.Any(e => e.ID == id);
+            return _context.Assignments.Any(e => e.Id == id);
         }
     }
 }

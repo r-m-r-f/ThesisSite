@@ -15,6 +15,6 @@ namespace ThesisSite.DTOs
 
         public int StudentCount { get; set; }
 
-        public bool CanEnroll => StudentCount < Limit;
+        public bool CanEnroll => !Limit.HasValue || StudentCount < Limit;
     }
 }

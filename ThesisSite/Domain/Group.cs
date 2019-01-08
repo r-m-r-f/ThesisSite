@@ -7,7 +7,7 @@ namespace ThesisSite.Domain
 {
     public class Group : IBaseEntity
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -22,6 +22,9 @@ namespace ThesisSite.Domain
         public Course Course { get; set; }
 
         public int? Limit { get; set; }
+
+        public int AssignmentId { get; set; }
+        public IList<Assignment> Assignments { get; set; }
 
         public IList<GroupEnrollment> GroupEnrollments { get; set; }
     }

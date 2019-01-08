@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ThesisSite.Domain;
 
 namespace ThesisSite.Data
@@ -28,6 +30,10 @@ namespace ThesisSite.Data
 
         public DbSet<FileUpload> FileUploads { get; set; }
 
+        public DbSet<Topic> Topics { get; set; }
+
+        public DbSet<TopicToStudent> TopicToStudents { get; set; }
+
         public override int SaveChanges()
         {
             UpdateTimestamps();
@@ -46,19 +52,25 @@ namespace ThesisSite.Data
 
             foreach(var entry in entries)
             {
-                if(entry is IBaseEntity entity)
-                {
-                    var now = DateTimeOffset.Now;
+                var now = DateTimeOffset.Now;
 
-                    switch(entry.State)
+                if (entry?.Entity is IBaseEntity)
+                {
+                    switch (entry.State)
                     {
                         case EntityState.Added:
-                            entity.CreatedTimestamp = now;
+                            entry.CurrentValues["CreatedTimestamp"] = now;
+                            break;
+
+                        // TODO: Add cascading soft deletes
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entry.CurrentValues["IsDeleted"] = true;
+                            entry.CurrentValues["DeletedTimestamp"] = DateTimeOffset.Now;
                             break;
                     }
                 }
             }
         }
-
     }
 }

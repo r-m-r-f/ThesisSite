@@ -7,7 +7,7 @@ namespace ThesisSite.Domain
 {
     public interface IBaseEntity
     {
-        int ID { get; set; }
+        int Id { get; set; }
 
         DateTimeOffset CreatedTimestamp { get; set; }
 

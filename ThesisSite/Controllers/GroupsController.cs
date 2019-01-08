@@ -21,14 +21,12 @@ namespace ThesisSite.Controllers
 {
     public class GroupsController : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IGroupsService _groupsService;
         private readonly ICourseService _courseService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public GroupsController(/*ApplicationDbContext context,*/ IGroupsService groupsService, ICourseService courseService, UserManager<ApplicationUser> userManager)
+        public GroupsController(IGroupsService groupsService, ICourseService courseService, UserManager<ApplicationUser> userManager)
         {
-            //_context = context;
             _userManager = userManager;
             _groupsService = groupsService;
             _courseService = courseService;
@@ -171,8 +169,14 @@ namespace ThesisSite.Controllers
         //TODO: Change to POST
         public async Task<IActionResult> RemoveFromGroup(string studentId, int groupId)
         {
-            await _groupsService.Withdraw(studentId, groupId);
+            await _groupsService.RemoveFromGroup(studentId, groupId);
             return RedirectToAction("ListStudents", new {groupId});
+        }
+
+        public async Task<IActionResult> Delete(int groupId, int courseId)
+        {
+            await _groupsService.RemoveGroup(groupId);
+            return RedirectToAction("CourseGroups", "Groups", new { courseId });
         }
 
         //// GET: Groups/Edit/5

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace ThesisSite.Services
     public class CourseService : ICourseService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IGroupsService _groupsService;
 
-        public CourseService(ApplicationDbContext context)
+        public CourseService(ApplicationDbContext context, IGroupsService groupsService)
         {
             _context = context;
+            _groupsService = groupsService;
         }
 
         public async Task<IEnumerable<Course>> GetAll()
@@ -26,12 +29,12 @@ namespace ThesisSite.Services
         public async Task<Course> GetCourseById(int id)
         {
             return await _context.Courses
-                .SingleOrDefaultAsync(m => m.ID == id && !m.IsDeleted);
+                .SingleOrDefaultAsync(m => m.Id == id && !m.IsDeleted);
         }
 
         public bool Exists(int id)
         {
-            return _context.Courses.Any(e => e.ID == id && !e.IsDeleted);
+            return _context.Courses.Any(e => e.Id == id && !e.IsDeleted);
         }
 
         public async Task AddCourse(Course course)
@@ -50,10 +53,28 @@ namespace ThesisSite.Services
                 return;
             }
 
-            course.IsDeleted = true;
-            course.DeletedTimestamp = DateTimeOffset.Now;
+            if (course != null)
+            {
+                var groups = course.Groups?.ToImmutableList();
 
-            await _context.SaveChangesAsync();
+                if (groups != null)
+                {
+                    foreach (var group in groups)
+                    {
+                        await _groupsService.RemoveGroup(group.Id);
+                    }
+                }
+
+                _context.Remove(course);
+
+                await _context.SaveChangesAsync();
+            }
+
+
+
+            //course.IsDeleted = true;
+            //course.DeletedTimestamp = DateTimeOffset.Now;
+
         }
 
         public async Task UpdateCourse(Course course)

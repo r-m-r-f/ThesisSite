@@ -7,7 +7,7 @@ namespace ThesisSite.Domain
 {
     public class GroupEnrollment : IBaseEntity
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public DateTimeOffset CreatedTimestamp { get; set; }
 

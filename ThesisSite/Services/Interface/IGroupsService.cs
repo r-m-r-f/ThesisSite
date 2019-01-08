@@ -19,8 +19,9 @@ namespace ThesisSite.Services.Interface
         Task Enroll(string userId, int groupId);
         Task<int> GetEnrolledStudentsCount(int groupId);
         Task<int?> GetEnrolledGroupId(string userId, int courseId);
-        Task Withdraw(string userId, int groupId);
+        Task RemoveFromGroup(string userId, int groupId);
         Task<IEnumerable<GroupDto>> GetCourseGroupDtosAsync(int courseId);
         Task<IEnumerable<ApplicationUser>> GetNotEnrolledUsers(int groupId);
+        Task RemoveGroup(int groupId);
     }
 }

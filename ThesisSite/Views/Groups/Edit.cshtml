@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="CourseID" class="control-label"></label>
                 <select asp-for="CourseID" class="form-control" asp-items="ViewBag.CourseID"></select>
@@ -27,7 +27,7 @@
 
 <div>
     <a asp-action="Index">Back to List</a><hr />
-    <a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@Model.ID" asp-route-courseId="@Model.CourseID" class="btn btn-danger">Delete</a>
+    <a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@Model.Id" asp-route-courseId="@Model.CourseID" class="btn btn-danger">Delete</a>
 </div>
 
 @section Scripts {

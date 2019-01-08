@@ -10,7 +10,7 @@
 @if (User.IsInRole(ApplicationRoles.Admin))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
     </p>
 }
 
@@ -24,7 +24,7 @@
                         <h3>@item.Name</h3>
                         <p>@item.ShortDescription</p>
                         <p>
-                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary">Details</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
                         </p>
                     </div>
                 </div>

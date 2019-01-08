@@ -17,10 +17,12 @@ namespace ThesisSite.Services
     public class GroupsService : IGroupsService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAssignmentsService _assignmentsService;
 
-        public GroupsService(ApplicationDbContext context)
+        public GroupsService(ApplicationDbContext context, IAssignmentsService assignmentsService)
         {
             _context = context;
+            _assignmentsService = assignmentsService;
         }
 
         public Task<List<Group>> GetStudentGroups(string studentId)
@@ -33,7 +35,7 @@ namespace ThesisSite.Services
 
         public Task<bool> GroupExists(int id)
         {
-            return _context.Groups.AnyAsync(e => e.ID == id);
+            return _context.Groups.AnyAsync(e => e.Id == id);
         }
 
         // TODO: CREATE DTO!!!!
@@ -47,7 +49,7 @@ namespace ThesisSite.Services
         public async Task<Group> GetGroupById(int id)
         {
             return await _context.Groups
-                .SingleOrDefaultAsync(x => x.ID == id && !x.IsDeleted);
+                .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
 
         public Task<List<ApplicationUser>> GetEnrolledStudents(int groupId)
@@ -84,7 +86,7 @@ namespace ThesisSite.Services
         public async Task Enroll(string userId, int groupId)
         {
             var isEnrolled = await _context.GroupEnrollments
-                .AnyAsync(x => x.Group.ID == groupId && x.UserId == userId && !x.IsDeleted);
+                .AnyAsync(x => x.Group.Id == groupId && x.UserId == userId && !x.IsDeleted);
 
             if (!isEnrolled)
             {
@@ -104,11 +106,6 @@ namespace ThesisSite.Services
             var students = await GetEnrolledStudents(groupId);
 
             return students.Count();
-            //return await _context.GroupEnrollments
-            //    .Where(x => x.GroupId == groupId && !x.User.IsDeleted)
-            //    .Include(x => x.User)
-            //    .Select(x => x.User)
-            //    .CountAsync();
         }
 
         public async Task<int?> GetEnrolledGroupId(string userId, int courseId)
@@ -119,7 +116,7 @@ namespace ThesisSite.Services
             return group?.GroupId;
         }
 
-        public async Task Withdraw(string userId, int groupId)
+        public async Task RemoveFromGroup(string userId, int groupId)
         {
             var enrollment = await _context.GroupEnrollments
                 .SingleOrDefaultAsync(x => !x.IsDeleted && x.UserId == userId && x.GroupId == groupId);
@@ -129,13 +126,42 @@ namespace ThesisSite.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task RemoveGroup(int groupId)
+        {
+            var group = await _context.Groups.SingleOrDefaultAsync(x => x.Id == groupId && !x.IsDeleted);
+
+            if (group != null)
+            {
+                var assignments = group.Assignments?.ToImmutableList();
+
+                if (assignments != null)
+                {
+                    foreach (var assignment in assignments)
+                    {
+                        await _assignmentsService.DeleteAssignment(assignment.Id);
+                    }
+                }
+
+                var enrollments = _context.GroupEnrollments.Where(x => x.GroupId == groupId && !x.IsDeleted).ToImmutableList();
+
+                if (enrollments != null)
+                {
+                    _context.RemoveRange(enrollments);
+                }
+
+                _context.Remove(group);
+
+                await _context.SaveChangesAsync();
+            }
+        } 
+
         public async Task<IEnumerable<GroupDto>> GetCourseGroupDtosAsync(int courseId)
         {
-            var aaa = await GetCourseGroups(courseId);
+            var groups = await GetCourseGroups(courseId);
 
-            var dtos =  aaa.Select(x => new GroupDto
+            var dtos =  groups.Select(x => new GroupDto
             {
-                ID = x.ID,
+                ID = x.Id,
                 Limit = x.Limit,
                 Name = x.Name
             }).ToImmutableList();

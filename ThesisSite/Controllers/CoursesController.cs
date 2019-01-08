@@ -41,14 +41,14 @@ namespace ThesisSite.Controllers
             var vm = new CourseDetailsViewModel
             {
                 Description = course.Description,
-                ID = course.ID,
+                ID = course.Id,
                 Name = course.Name
             };
 
             if (User.IsInRole(ApplicationRoles.Student))
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                vm.GroupId = await _groupsService.GetEnrolledGroupId(userId, course.ID);
+                vm.GroupId = await _groupsService.GetEnrolledGroupId(userId, course.Id);
             }
 
             return View(vm);
@@ -98,7 +98,7 @@ namespace ThesisSite.Controllers
         [Authorize(Roles = ApplicationRoles.Admin)]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,ID,CreatedTimestamp,DeletedTimestamp,IsDeleted")] Course course)
         {
-            if (id != course.ID)
+            if (id != course.Id)
             {
                 return NotFound();
             }
