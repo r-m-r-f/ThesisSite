@@ -298,8 +298,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<DateTimeOffset>("Timestamp");
 
-                    b.Property<int>("TopicId");
-
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");

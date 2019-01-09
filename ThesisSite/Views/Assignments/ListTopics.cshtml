@@ -37,6 +37,9 @@
                                 <a>Topics</a>
                             </div>
                         </div>
+                    } else if (User.IsInRole(ApplicationRoles.Student))
+                    {
+                        <a asp-action="AddStudentToTopic"  asp-route-topicId="@item.Id" class="btn">Enroll</a>
                     }
                 </div>
 

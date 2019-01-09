@@ -128,7 +128,7 @@ namespace ThesisSite.Services
             return tts?.TopicId;
         }
 
-        public async void AddStudentToTopic(int topicId, string studentId)
+        public async Task AddStudentToTopic(int topicId, string studentId)
         {
             var topicToStudent = new TopicToStudent
             {
@@ -189,12 +189,12 @@ namespace ThesisSite.Services
             var now = DateTimeOffset.Now;
             var topic = await GetTopicById(vm.TopicId);
             var assignment = await GetAssignmentById(topic.AssignmentId);
-            var count = await GetUploadedSolutionsCount(userId, vm.TopicId);
+            //var count = await GetUploadedSolutionsCount(userId, vm.TopicId);
 
-            if (assignment.UploadLimit <= count)
-            {
-                throw new ExcessiveFileUploadException();
-            }
+            //if (assignment.UploadLimit <= count)
+            //{
+            //    throw new ExcessiveFileUploadException();
+            //}
 
             var path = await _uploadService.UploadFile(userId, vm);
 
@@ -208,10 +208,10 @@ namespace ThesisSite.Services
 
             _context.Add(fileUpload);
 
-            var tts = await _context.TopicToStudents
-                .SingleOrDefaultAsync(x => x.TopicId == topic.Id && x.UserId == userId && !x.IsDeleted);
+            //var tts = await _context.TopicToStudents
+            //    .SingleOrDefaultAsync(x => x.TopicId == topic.Id && x.UserId == userId && !x.IsDeleted);
 
-            tts.FileUpload = fileUpload;
+            //tts.FileUpload = fileUpload;
 
             await _context.SaveChangesAsync();
         }

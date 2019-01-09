@@ -10,8 +10,8 @@ using ThesisSite.Data;
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190106135657_UpdateAssignments")]
-    partial class UpdateAssignments
+    [Migration("20190109002836_UpdateFileUpload")]
+    partial class UpdateFileUpload
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -196,7 +196,7 @@ namespace ThesisSite.Migrations
 
             modelBuilder.Entity("ThesisSite.Domain.Assignment", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -206,17 +206,21 @@ namespace ThesisSite.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<DateTime>("DueTo");
+                    b.Property<DateTimeOffset>("DueTo");
 
                     b.Property<int>("GroupId");
+
+                    b.Property<bool>("IsActive");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("ShortDescription");
+
                     b.Property<int>("UploadLimit");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
@@ -231,6 +235,12 @@ namespace ThesisSite.Migrations
 
                     b.Property<int>("AssignmentId");
 
+                    b.Property<DateTimeOffset>("CreatedTimestamp");
+
+                    b.Property<DateTimeOffset?>("DeletedTimestamp");
+
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
@@ -244,7 +254,7 @@ namespace ThesisSite.Migrations
 
             modelBuilder.Entity("ThesisSite.Domain.Course", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -263,7 +273,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<string>("ShortDescription");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Courses");
                 });
@@ -276,22 +286,42 @@ namespace ThesisSite.Migrations
 
                     b.Property<int>("AssignmentId");
 
+                    b.Property<int>("AssignmentToStudentId");
+
+                    b.Property<int?>("AssignmetsToStudentId");
+
+                    b.Property<DateTimeOffset>("CreatedTimestamp");
+
+                    b.Property<DateTimeOffset?>("DeletedTimestamp");
+
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<string>("Path");
 
                     b.Property<DateTimeOffset>("Timestamp");
 
+                    b.Property<int>("TopicId");
+
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("AssignmetsToStudentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FileUploads");
                 });
 
             modelBuilder.Entity("ThesisSite.Domain.Group", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AssignmentId");
 
                     b.Property<int>("CourseID");
 
@@ -305,7 +335,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<string>("Name");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseID");
 
@@ -314,7 +344,7 @@ namespace ThesisSite.Migrations
 
             modelBuilder.Entity("ThesisSite.Domain.GroupEnrollment", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -328,7 +358,7 @@ namespace ThesisSite.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
@@ -352,6 +382,70 @@ namespace ThesisSite.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("LanguageVersion");
+                });
+
+            modelBuilder.Entity("ThesisSite.Domain.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AssignmentId");
+
+                    b.Property<DateTimeOffset>("CreatedTimestamp");
+
+                    b.Property<DateTimeOffset?>("DeletedTimestamp");
+
+                    b.Property<string>("Description");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int?>("Limit");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("ShortDescription");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.ToTable("Topics");
+                });
+
+            modelBuilder.Entity("ThesisSite.Domain.TopicToStudent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AssignmentId");
+
+                    b.Property<DateTimeOffset>("CreatedTimestamp");
+
+                    b.Property<DateTimeOffset?>("DeletedTimestamp");
+
+                    b.Property<int>("FileUploadId");
+
+                    b.Property<int>("Grade");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("TopicId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("FileUploadId");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TopicToStudents");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -402,7 +496,7 @@ namespace ThesisSite.Migrations
             modelBuilder.Entity("ThesisSite.Domain.Assignment", b =>
                 {
                     b.HasOne("ThesisSite.Domain.Group", "Group")
-                        .WithMany()
+                        .WithMany("Assignments")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -410,9 +504,25 @@ namespace ThesisSite.Migrations
             modelBuilder.Entity("ThesisSite.Domain.AssignmetsToStudent", b =>
                 {
                     b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
-                        .WithMany("AssignmetsToStudents")
+                        .WithMany()
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("ThesisSite.Domain.FileUpload", b =>
+                {
+                    b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
+                        .WithMany()
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThesisSite.Domain.AssignmetsToStudent", "AssignmetsToStudent")
+                        .WithMany("Uploads")
+                        .HasForeignKey("AssignmetsToStudentId");
 
                     b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
                         .WithMany()
@@ -445,6 +555,35 @@ namespace ThesisSite.Migrations
                         .WithMany("LanguageVersions")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ThesisSite.Domain.Topic", b =>
+                {
+                    b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
+                        .WithMany("Topics")
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ThesisSite.Domain.TopicToStudent", b =>
+                {
+                    b.HasOne("ThesisSite.Domain.Assignment")
+                        .WithMany("TopicToStudents")
+                        .HasForeignKey("AssignmentId");
+
+                    b.HasOne("ThesisSite.Domain.FileUpload", "FileUpload")
+                        .WithMany()
+                        .HasForeignKey("FileUploadId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThesisSite.Domain.Topic", "Topic")
+                        .WithMany("Students")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
+                        .WithMany("Topics")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

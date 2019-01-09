@@ -240,6 +240,15 @@ namespace ThesisSite.Controllers
             return View(assignment);
         }
 
+        public async Task<IActionResult> AddStudentToTopic(int topicId)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            //await _assignmentsService.AddStudentToTopic(topicId, userId);
+
+            return RedirectToAction("UploadSolution", new {topicId});
+        }
+
         // POST: Assignments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
