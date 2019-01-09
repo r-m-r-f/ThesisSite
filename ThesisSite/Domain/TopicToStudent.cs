@@ -20,6 +20,10 @@ namespace ThesisSite.Domain
 
         public int TopicId { get; set; }
 
+        public int FileUploadId { get; set; }
+
+        public FileUpload FileUpload { get; set; }
+
         public int Grade { get; set; }
     }
 }

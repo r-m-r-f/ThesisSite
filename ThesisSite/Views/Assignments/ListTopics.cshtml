@@ -1,0 +1,47 @@
+﻿@using ThesisSite.Domain.Helpers
+@model ThesisSite.ViewModel.Assignments.ListTopicsViewModel
+@{
+    ViewData["Title"] = "ListTopics";
+}
+
+<h2>ListTopics</h2>
+
+<div class="btn-toolbar">
+    <a asp-action="CreateTopic" asp-controller="Assignments" asp-route-assignmentId="@Model.AssignmentId" class="bg-primary btn">Add</a>
+</div>
+
+<div class="list-group">
+    @foreach (var item in Model.Topics)
+    {
+        <div class="container-fluid list-group-item">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>@item.Name</p>
+                    <p>@item.ShortDescription</p>
+                </div>
+                <div class="col-md-12">
+                    @if (User.IsInRole(ApplicationRoles.Admin))
+                    {
+                        <div class="btn-group">
+                            <a @*asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" *@ class="btn btn-primary">Details</a>
+                            <div class="btn-group">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Edit
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a asp-action="DeleteTopic" asp-route-assignmentId="@Model.AssignmentId" asp-route-topicId="@item.Id" class="btn">Delete</a>
+                                    </li>
+                                </ul>
+                                <a>Topics</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>

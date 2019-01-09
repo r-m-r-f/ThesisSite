@@ -45,7 +45,8 @@ namespace ThesisSite.Services
 
         public async Task CreateTopic(CreateTopicViewModel vm)
         {
-            _context.Add(vm.ToTopic());
+            var topic = vm.ToTopic();
+            _context.Add(topic);
             await _context.SaveChangesAsync();
         }
 
@@ -119,6 +120,61 @@ namespace ThesisSite.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<int?> IsStudentAssignedToTopic(int assignmentId, string studentId)
+        {
+            var tts = await _context.TopicToStudents.SingleOrDefaultAsync(x =>
+                x.Topic.Assignment.Id == assignmentId && x.UserId == studentId && !x.IsDeleted);
+
+            return tts?.TopicId;
+        }
+
+        public async void AddStudentToTopic(int topicId, string studentId)
+        {
+            var topicToStudent = new TopicToStudent
+            {
+                TopicId = topicId,
+                UserId = studentId
+            };
+
+            _context.Add(topicToStudent);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ProlongAssignment(int assignmentId, DateTimeOffset newDate)
+        {
+            var assignment = await GetAssignmentById(assignmentId);
+
+            if (newDate < assignment.DueTo)
+            {
+                throw new InvalidAssignmentDueDate();
+            }
+
+            assignment.DueTo = newDate;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Topic>> GetTopicsByAssignmentId(int assignmentId)
+        {
+            return await _context.Topics
+                .Where(x => x.AssignmentId == assignmentId && !x.IsDeleted)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAssignedToTopic(int topicId)
+        {
+            var count = await _context.TopicToStudents
+                .Where(x => x.TopicId == topicId && !x.IsDeleted)
+                .CountAsync();
+
+            return count;
+        }
+
+        public async Task<Topic> GetTopicById(int topicId)
+        {
+            return await _context.Topics.SingleOrDefaultAsync(x => x.Id == topicId && !x.IsDeleted);
+        }
+
 
         //public async Task<IEnumerable<FileUpload>> GetUploadedSolutions(string userId, int assignmentId)
         //{
@@ -128,37 +184,44 @@ namespace ThesisSite.Services
         //        .ToListAsync();
         //}
 
-        //public async Task UploadSolution(string userId, UploadSolutionViewModel vm)
-        //{
-        //    var now = DateTimeOffset.Now;
-        //    var assignment = await GetAssignmentById(vm.AssignmentId);
-        //    var count = await GetUploadedSolutionsCount(userId, vm.AssignmentId);
+        public async Task UploadSolution(string userId, UploadSolutionViewModel vm)
+        {
+            var now = DateTimeOffset.Now;
+            var topic = await GetTopicById(vm.TopicId);
+            var assignment = await GetAssignmentById(topic.AssignmentId);
+            var count = await GetUploadedSolutionsCount(userId, vm.TopicId);
 
-        //    if (assignment.UploadLimit <= count)
-        //    {
-        //        throw new ExcessiveFileUploadException();
-        //    }
+            if (assignment.UploadLimit <= count)
+            {
+                throw new ExcessiveFileUploadException();
+            }
 
-        //    var path = await _uploadService.UploadFile(userId, vm);
+            var path = await _uploadService.UploadFile(userId, vm);
 
-        //    var fileUpload = new FileUpload
-        //    {
-        //        AssignmentId = vm.AssignmentId,
-        //        UserId = userId,
-        //        Timestamp = now,
-        //        Path = path
-        //    };
+            var fileUpload = new FileUpload
+            {
+                AssignmentId = assignment.Id,
+                UserId = userId,
+                Timestamp = now,
+                Path = path
+            };
 
-        //    _context.Add(fileUpload);
-        //    await _context.SaveChangesAsync();
-        //}
+            _context.Add(fileUpload);
 
-        //private async Task<int> GetUploadedSolutionsCount(string userId, int assignmentId)
-        //{
-        //    return await _context.FileUploads
-        //        .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
-        //        .CountAsync();
-        //}
+            var tts = await _context.TopicToStudents
+                .SingleOrDefaultAsync(x => x.TopicId == topic.Id && x.UserId == userId && !x.IsDeleted);
+
+            tts.FileUpload = fileUpload;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<int> GetUploadedSolutionsCount(string userId, int assignmentId)
+        {
+            return await _context.FileUploads
+                .Where(x => x.UserId == userId && x.AssignmentId == assignmentId)
+                .CountAsync();
+        }
 
     }
 }

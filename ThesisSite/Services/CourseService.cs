@@ -69,12 +69,6 @@ namespace ThesisSite.Services
 
                 await _context.SaveChangesAsync();
             }
-
-
-
-            //course.IsDeleted = true;
-            //course.DeletedTimestamp = DateTimeOffset.Now;
-
         }
 
         public async Task UpdateCourse(Course course)

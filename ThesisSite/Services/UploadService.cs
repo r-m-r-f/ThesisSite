@@ -25,7 +25,7 @@ namespace ThesisSite.Services
         // return path to uploaded file
         public async Task<string> UploadFile(string userId, UploadSolutionViewModel vm)
         {
-            var path = $"{uploadDir}/{vm.AssignmentId}/{userId}";
+            var path = $"{uploadDir}/{vm.TopicId}/{userId}";
 
             if (!Directory.Exists(path))
             {

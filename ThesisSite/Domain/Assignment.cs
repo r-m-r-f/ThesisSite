@@ -31,6 +31,8 @@ namespace ThesisSite.Domain
 
         public IList<Topic> Topics { get; set; }
 
+        public IList<TopicToStudent> TopicToStudents { get; set; }
+
         //public IList<AssignmetsToStudent> AssignmetsToStudents { get; set; }
     }
 }

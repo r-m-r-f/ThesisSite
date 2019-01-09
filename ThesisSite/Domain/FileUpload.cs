@@ -12,7 +12,17 @@ namespace ThesisSite.Domain
         public DateTimeOffset? DeletedTimestamp { get; set; }
         public bool IsDeleted { get; set; }
 
-        //public string UserId { get; set; }
+        public string UserId { get; set; }
+
+        public ApplicationUser User { get; set; }
+
+        public Assignment Assignment { get; set; }
+
+        public int AssignmentId { get; set; }
+
+        public int TopicId { get; set; }
+
+        //public int Topic { get; set; }
 
         public int AssignmentToStudentId { get; set; }
 

@@ -8,7 +8,7 @@ namespace ThesisSite.ViewModel.Assignments
 {
     public class UploadSolutionViewModel
     {
-        public int AssignmentId { get; set; }
+        public int TopicId { get; set; }
 
         public IFormFile SolutionFile { get; set; }
     }

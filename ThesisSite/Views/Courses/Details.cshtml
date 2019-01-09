@@ -1,6 +1,5 @@
 ﻿@using ThesisSite.Domain.Helpers
 @using Westwind.AspNetCore.Markdown
-@*@model ThesisSite.Domain.Course*@
 @model ThesisSite.ViewModel.Course.CourseDetailsViewModel
 
 @{
@@ -30,7 +29,7 @@
                 }
                 else
                 {
-                    <a asp-action="Details" asp-controller="Groups" asp-route-id="@Model.GroupId.Value">Assignments</a>
+                    <a asp-action="ListAssignments" asp-controller="Assignments" asp-route-groupId="@Model.GroupId.Value">Assignments</a>
                 }
             }
         </div>

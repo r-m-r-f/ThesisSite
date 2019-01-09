@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThesisSite.Data;
 
 namespace ThesisSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190108225219_AddTopicToStudentsNavigation")]
+    partial class AddTopicToStudentsNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,8 +284,6 @@ namespace ThesisSite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssignmentId");
-
                     b.Property<int>("AssignmentToStudentId");
 
                     b.Property<int?>("AssignmetsToStudentId");
@@ -298,17 +298,9 @@ namespace ThesisSite.Migrations
 
                     b.Property<DateTimeOffset>("Timestamp");
 
-                    b.Property<int>("TopicId");
-
-                    b.Property<string>("UserId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignmentId");
-
                     b.HasIndex("AssignmetsToStudentId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("FileUploads");
                 });
@@ -423,8 +415,6 @@ namespace ThesisSite.Migrations
 
                     b.Property<DateTimeOffset?>("DeletedTimestamp");
 
-                    b.Property<int>("FileUploadId");
-
                     b.Property<int>("Grade");
 
                     b.Property<bool>("IsDeleted");
@@ -436,8 +426,6 @@ namespace ThesisSite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId");
-
-                    b.HasIndex("FileUploadId");
 
                     b.HasIndex("TopicId");
 
@@ -513,18 +501,9 @@ namespace ThesisSite.Migrations
 
             modelBuilder.Entity("ThesisSite.Domain.FileUpload", b =>
                 {
-                    b.HasOne("ThesisSite.Domain.Assignment", "Assignment")
-                        .WithMany()
-                        .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("ThesisSite.Domain.AssignmetsToStudent", "AssignmetsToStudent")
                         .WithMany("Uploads")
                         .HasForeignKey("AssignmetsToStudentId");
-
-                    b.HasOne("ThesisSite.Domain.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ThesisSite.Domain.Group", b =>
@@ -568,11 +547,6 @@ namespace ThesisSite.Migrations
                     b.HasOne("ThesisSite.Domain.Assignment")
                         .WithMany("TopicToStudents")
                         .HasForeignKey("AssignmentId");
-
-                    b.HasOne("ThesisSite.Domain.FileUpload", "FileUpload")
-                        .WithMany()
-                        .HasForeignKey("FileUploadId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ThesisSite.Domain.Topic", "Topic")
                         .WithMany("Students")

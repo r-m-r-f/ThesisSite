@@ -35,7 +35,7 @@
                                     </li>
                                 </ul>
                             </div>                 
-                            <a asp-action="Index" asp-controller="Assignments" asp-route-groupId="@item.ID" class="btn btn-default">Assignments</a>
+                            <a asp-action="ListAssignments" asp-controller="Assignments" asp-route-groupId="@item.ID" class="btn btn-default">Assignments</a>
                             <a asp-action="Delete" asp-controller="Groups" asp-route-groupId="@item.ID" asp-route-courseId="@Model.CourseId" class="btn btn-danger">Delete</a>
                         </div>
                     }

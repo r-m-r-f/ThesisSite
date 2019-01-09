@@ -1,0 +1,70 @@
+﻿@using ThesisSite.Domain.Helpers
+@model ThesisSite.ViewModel.Assignments.ListAssignmentsViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>@Model.Name - assignments</h2>
+
+@if (User.IsInRole(ApplicationRoles.Admin))
+{
+    <div class="btn-toolbar">
+        <a asp-action="CreateAssignment" asp-controller="Assignments" asp-route-groupId="@Model.GroupId" class="bg-primary btn">Add</a>
+    </div>
+}
+
+<div class="list-group">
+    @foreach (var item in Model.Assignments)
+    {
+        <div class="container-fluid list-group-item">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>@item.Name</p>
+                    <p>@item.ShortDescription</p>
+                </div>
+                <div class="col-md-12">
+                    @if (User.IsInRole(ApplicationRoles.Admin))
+                    {
+                        <div class="btn-group">
+                            <a @*asp-action="ListStudents" asp-controller="Groups" asp-route-groupId="@item.ID" *@ class="btn btn-primary">Details</a>
+                            <div class="btn-group">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Edit
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @if (item.IsActive)
+                                    {
+                                        <li>
+                                            <a asp-action="DeactivateAssignment" asp-route-assignmentId="@item.Id" asp-route-groupId="@Model.GroupId" class="btn">Deactivate</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a asp-action="ActivateAssignment" asp-route-assignmentId="@item.Id" asp-route-groupId="@Model.GroupId" class="btn">Activate</a>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <a asp-action="DeleteAssignment" asp-route-assignmentId="@item.Id" asp-route-groupId="@Model.GroupId" class="btn">Delete</a>
+                                    </li>
+                                </ul>
+                                <a asp-action="ListTopics" asp-route-assignmentId="@item.Id" class="btn btn-de">Topics</a>
+                            </div>
+                        </div>
+                    }
+                    else if(User.IsInRole(ApplicationRoles.Student))
+                    {
+                        <a asp-action="GetStudentTopic" asp-route-assignmentId="@item.Id" class="btn btn-default">Topics</a>
+                    }
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>

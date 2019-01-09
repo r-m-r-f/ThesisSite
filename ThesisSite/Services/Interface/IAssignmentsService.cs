@@ -21,5 +21,10 @@ namespace ThesisSite.Services.Interface
         Task DectivateAssignment(int assignmentId);
         Task DeleteAssignment(int assignmentId);
         void AddStudentsToTopic(int topicId, IEnumerable<string> studentIds);
+        Task<IEnumerable<Topic>> GetTopicsByAssignmentId(int assignmentId);
+        Task<int> CountAssignedToTopic(int topicId);
+        void AddStudentToTopic(int topicId, string studentId);
+        Task<int?> IsStudentAssignedToTopic(int assignmentId, string studentId);
+        Task UploadSolution(string userId, UploadSolutionViewModel vm);
     }
 }

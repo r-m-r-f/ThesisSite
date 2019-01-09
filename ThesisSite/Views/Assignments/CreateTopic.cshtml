@@ -1,0 +1,43 @@
+﻿@model ThesisSite.ViewModel.Assignments.CreateTopicViewModel
+@{
+    ViewData["Title"] = "CreateTopic";
+}
+
+<h2>Create Topic</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="CreateTopic">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="AssignmentId" type="hidden" />
+            <div class="form-group">
+                <label asp-for="Limit" class="control-label"></label>
+                <input asp-for="Limit" class="form-control" />
+                <span asp-validation-for="Limit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShortDescription" class="control-label"></label>
+                <input asp-for="ShortDescription" class="form-control" />
+                <span asp-validation-for="ShortDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ListTopics" asp-route-groupId="@Model.AssignmentId">Back to topics</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
